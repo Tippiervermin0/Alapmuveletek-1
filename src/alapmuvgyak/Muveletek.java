@@ -3,11 +3,13 @@ package alapmuvgyak;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Muveletek extends javax.swing.JFrame {
@@ -317,31 +319,57 @@ public class Muveletek extends javax.swing.JFrame {
         JFileChooser fc = new JFileChooser(new File("."));
         fc.setDialogTitle("Mentés másként!");
         fc.setAcceptAllFileFilterUsed(false);
-
+        
         FileNameExtensionFilter imgFilter = new FileNameExtensionFilter("PNG és GIF képek", "png", "gif");
         fc.addChoosableFileFilter(imgFilter);
-
-        FileNameExtensionFilter txtFilter = new FileNameExtensionFilter("csak szöveg (.txt)", "txt");
+        
+        FileNameExtensionFilter txtFilter = new FileNameExtensionFilter("csak szöveg (*.txt)", "txt");
         fc.addChoosableFileFilter(txtFilter);
-
-        FileNameExtensionFilter kkFilter = new FileNameExtensionFilter("speciális (.kk)", "kk");
+        
+        FileNameExtensionFilter kkFilter = new FileNameExtensionFilter("speciális (*.kk)", "kk");
         fc.addChoosableFileFilter(kkFilter);
-
+        
         fc.setFileFilter(txtFilter);
         int kivalaszt = fc.showSaveDialog(this);
 
         if (kivalaszt == JFileChooser.APPROVE_OPTION) {
             File f = fc.getSelectedFile();
-
+            
             String[] kiterjesztes = ((FileNameExtensionFilter)fc.getFileFilter()).getExtensions();
-            String fn = f.getName() + "." +kiterjesztes[0];
+            String fn = f.getName(); //+ "." +kiterjesztes[0];
+            
+            /* kiterjezstés van e*/
+            if(!fn.endsWith("." + kiterjesztes[0])){
+                fn += "." + kiterjesztes[0];
+            }
+            
+            /* kiterjezstés van e VÉGE*/
+            Path path = Paths.get(fn);
+            boolean mentes = true;
+            /* létezik e*/
+            if(Files.exists(path)){
+                kivalaszt = JOptionPane.showConfirmDialog(this, "Felülírjam", "A fájl létezik", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                if(kivalaszt == JOptionPane.NO_OPTION){
+                    mentes = false;
+                    
+                }
+            }
+            
+            /* létezik e VÉGE*/
+            
             lblEredmeny.setText("<html>Elérés: " + f.getPath() + "<br>Fájl neve: " + fn + "</html>");
             try {
-                Files.write(Paths.get(f.getPath()+ "." + kiterjesztes[0]), "Statisztika: ".getBytes());
+                /* tényleges kiiratás */
+                if(mentes){
+                    Files.write(path, "Statisztika: ".getBytes());
+                }
+                /* tényleges kiiratás VÉGE*/
             } catch (IOException ex) {
                 Logger.getLogger(Muveletek.class.getName()).log(Level.SEVERE, null, ex);
             }
 
+        }else {
+            JOptionPane.showMessageDialog(this, "Mentés megszakítva", "Nincs mentés", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_mentesmaskentActionPerformed
 
