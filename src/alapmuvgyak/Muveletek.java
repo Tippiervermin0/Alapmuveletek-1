@@ -21,8 +21,13 @@ public class Muveletek extends javax.swing.JFrame {
     /**
      * Creates new form Muveletek
      */
+    JLabel[] lblTomb;
+    String[] lblTextTomb;
     public Muveletek() {
         initComponents();
+        lblTextTomb = new String[]{"Össz kérdések száma", "Össz próbálkozások száma", "Összeadás", "Összeadás", "Kivonás", "Kivonás", "Osztás", "Osztás", "Szorzás", "Szorzás"};
+        lblTomb = new JLabel[]{lblOsszKerdes, lblOsszProba, lblOsszeadKerdes, lblOsszeadProba, lblKivonasKerdes, lblKivonasProba, lblOsztasKerdes, lblOsztasProba, lblSzorzasKerdes, lblSzorzasProba};
+
 
     }
     Random random = new Random();
@@ -468,10 +473,47 @@ public class Muveletek extends javax.swing.JFrame {
                 byte egyBajt = bajtTomb[0];
                 
                 List<String> stringLista = Files.readAllLines(path);
-                String egySor = stringLista.get(1);
-                String[] adatok = egySor.split(": ");
-
-                int temp = 0;
+                int lblInd = 0;
+                for (int i = 1; i < stringLista.size(); i++) {
+                    String egySor = stringLista.get(1);
+                    String[] adatok = egySor.split(": ");
+                    JLabel lbl = lblTomb[lblInd + 1];
+                    lblOsszKerdes.setText(lblTextTomb[lblInd] + adatok[0]);
+                    adatok = adatok[1].split(" ");
+                    lbl = lblTomb[lblInd];
+                    lblOsszProba.setText(lblTextTomb[lblInd+1] + adatok[2]);
+                    lblInd += 2;
+                }
+                
+                
+//                String egySor = stringLista.get(1);
+//                String[] adatok = egySor.split(": ");
+//
+//                String s2 = adatok[2];
+//                lblOsszKerdes.setText("Össz kérdések száma" + adatok[0]);
+////                int szam = Integer.valueOf(adatok[2]);
+//                adatok = adatok[1].split(" ");
+//                String s1 = adatok[0];
+//                lblOsszProba.setText("Össz Próbálkozások száma" + adatok[2]);
+//                
+//                egySor = stringLista.get(2);
+//                adatok = egySor.split(": ");
+//                s2 = adatok[2];
+//                lblOsszeadKerdes.setText("Összeadas: " + adatok[2]);
+//                adatok = adatok[1].split(" ");
+//                s1 = adatok[0];
+//                lblOsszeadProba.setText("Összeadas: " + adatok[0]);
+//                
+//                egySor = stringLista.get(4);
+//                adatok = egySor.split(": ");
+//                s2 = adatok[2];
+//                lblOsztasKerdes.setText("Osztás: " + adatok[2]);
+//                adatok = adatok[1].split(" ");
+//                s1 = adatok[0];
+//                lblOsztasProba.setText("Osztás: " + adatok[0]);
+               
+                
+                int temp = 7;
                 /* tényleges megnyitás VÉGE */
             } catch (IOException ex) {
                 Logger.getLogger(Muveletek.class.getName()).log(Level.SEVERE, null, ex);
@@ -649,7 +691,6 @@ public class Muveletek extends javax.swing.JFrame {
 
     private String tartalomOsszeallitas() {
         String statisztika = "Alampműveletek gyakoroltatása statisztika: \n";
-        JLabel[] lblTomb = new JLabel[]{lblOsszKerdes, lblOsszProba, lblOsszeadKerdes, lblOsszeadProba, lblKivonasKerdes, lblKivonasProba, lblOsztasKerdes, lblOsztasProba, lblSzorzasKerdes, lblSzorzasProba};
         final int HE = 3;
         final int kerdesMaxHossz = lblOsszKerdes.getText().length();
         final int probaMaxHossz = lblOsszProba.getText().length();
